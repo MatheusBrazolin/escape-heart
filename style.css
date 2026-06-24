@@ -1,0 +1,442 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #ffe6f0, #fff5f9);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* === TELAS === */
+.start-screen,
+.winner-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    z-index: 2;
+}
+
+.winner-screen {
+    display: none;
+}
+
+.winner-screen.ativo {
+    display: flex;
+    animation: aparecer 0.8s ease forwards;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: scale(0.88); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* === TEXTO DIGITANDO === */
+.intro-text {
+    font-size: 17px;
+    color: #ff85b3;
+    line-height: 1.7;
+    text-align: center;
+    white-space: pre;
+}
+
+/* === BOTÕES === */
+button {
+    padding: 14px 30px;
+    font-size: 18px;
+    border-radius: 30px;
+    border: none;
+    background: #ff4f9a;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+button:hover {
+    background: #ff2f86;
+    transform: scale(1.08);
+}
+
+#start {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* === BOTÃO FUGITIVO === */
+#fujao {
+    position: absolute;
+    display: none;
+    z-index: 3;
+}
+
+/* === CORAÇÕES DE FUNDO === */
+.hearts {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.heart {
+    position: absolute;
+    bottom: -30px;
+    animation: floatUp linear infinite;
+    opacity: 0.6;
+    user-select: none;
+}
+
+@keyframes floatUp {
+    from { transform: translateY(0) rotate(0deg);      opacity: 0.6; }
+    to   { transform: translateY(-110vh) rotate(15deg); opacity: 0; }
+}
+
+/* === RASTRO DE CORAÇÕES === */
+.trail-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 5;
+    font-size: 16px;
+    transform: translate(-50%, -50%);
+    animation: trailFade 0.85s ease forwards;
+}
+
+@keyframes trailFade {
+    from { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    to   { opacity: 0; transform: translate(-50%, -130%) scale(0.4); }
+}
+
+/* === CONTADOR DE TENTATIVAS === */
+.contador {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: 5px;
+    z-index: 10;
+    font-size: 22px;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.15));
+}
+
+/* === SHAKE (última tentativa) === */
+@keyframes shake {
+    0%   { transform: translateX(0) rotate(0deg); }
+    25%  { transform: translateX(-5px) rotate(-3deg); }
+    50%  { transform: translateX(5px) rotate(3deg); }
+    75%  { transform: translateX(-5px) rotate(-3deg); }
+    100% { transform: translateX(0) rotate(0deg); }
+}
+
+.shake {
+    animation: shake 0.35s infinite !important;
+    transition: none !important;
+}
+
+/* === CONFETE === */
+.confete {
+    position: fixed;
+    top: -40px;
+    pointer-events: none;
+    z-index: 100;
+    animation: cair linear forwards;
+    user-select: none;
+}
+
+@keyframes cair {
+    from { transform: translateY(0) rotate(0deg);     opacity: 1; }
+    to   { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+/* === TELA DE VITÓRIA === */
+.winner-title {
+    font-size: 30px;
+    color: #ff4f9a;
+    margin-bottom: 4px;
+}
+
+.winner-message {
+    font-size: 18px;
+    color: #5a0038;
+    max-width: 340px;
+    line-height: 1.7;
+    font-weight: normal;
+}
+
+.start-screen h2 {
+    margin-bottom: 4px;
+    color: #cc2271;
+    font-size: 22px;
+}
+
+/* ============================================================
+   SURPRESA
+   ============================================================ */
+
+.surpresa-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    z-index: 2;
+    padding: 28px 16px;
+    max-height: 92vh;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 420px;
+    animation: aparecer 0.7s ease forwards;
+}
+
+.surpresa-screen.ativo {
+    display: flex;
+}
+
+/* Fases internas */
+.fase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    animation: fadeUp 0.5s ease forwards;
+}
+
+.fase.escondida {
+    display: none;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Envelope --- */
+.envelope-container {
+    font-size: 88px;
+    cursor: pointer;
+    display: inline-block;
+    user-select: none;
+    animation: envPulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 4px 14px rgba(255, 79, 154, 0.35));
+}
+
+@keyframes envPulse {
+    0%, 100% { transform: scale(1) rotate(-4deg); }
+    50%       { transform: scale(1.14) rotate(4deg); }
+}
+
+.envelope-container.abrindo {
+    animation: abrirEnv 0.65s ease forwards;
+}
+
+@keyframes abrirEnv {
+    0%   { transform: scale(1);                  opacity: 1; }
+    45%  { transform: scale(1.5) rotate(12deg);  opacity: 1; }
+    100% { transform: scale(0.1) rotate(-20deg); opacity: 0; }
+}
+
+.dica-envelope {
+    font-size: 14px;
+    color: #ff85b3;
+    animation: piscar 1.8s ease-in-out infinite;
+    margin: 0;
+}
+
+@keyframes piscar {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
+/* --- Carta --- */
+.carta {
+    background: #fff9fb;
+    border: 1px solid #ffd6e8;
+    border-radius: 16px;
+    padding: 22px 26px;
+    width: 320px;
+    max-height: min(360px, 52vh);
+    overflow-y: auto;
+    box-shadow: 0 4px 24px rgba(255, 79, 154, 0.1);
+    line-height: 1.95;
+    color: #5a0038;
+    font-size: 15px;
+    text-align: left;
+}
+
+#cartaTexto {
+    margin: 0;
+    min-height: 20px;
+}
+
+/* --- Botões "revelar" (aparecem após ação) --- */
+.btn-reveal {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* --- Slideshow --- */
+.slideshow {
+    width: 300px;
+}
+
+.slide {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeUp 0.4s ease;
+}
+
+.slide.ativo {
+    display: flex;
+}
+
+.foto-placeholder {
+    width: 280px;
+    height: 190px;
+    background: linear-gradient(135deg, #ffd6e8, #ffe9f3);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 54px;
+}
+
+/* Classe para quando substituir por imagem real */
+.foto-img {
+    width: 280px;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.foto-legenda {
+    font-style: italic;
+    color: #7a004f;
+    font-size: 14px;
+    margin-top: 10px;
+    max-width: 280px;
+    text-align: center;
+}
+
+.slide-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 14px;
+}
+
+.btn-nav {
+    background: transparent;
+    border: 2px solid #ff4f9a;
+    color: #ff4f9a;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-nav:hover {
+    background: #ff4f9a;
+    color: white;
+    transform: scale(1.1);
+}
+
+.slide-dots {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ffc0db;
+    cursor: pointer;
+    transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.dot.ativo {
+    background: #ff4f9a;
+    transform: scale(1.35);
+}
+
+/* --- Contador de dias --- */
+.dias-wrap {
+    text-align: center;
+}
+
+.dias-num {
+    font-size: 76px;
+    font-weight: bold;
+    color: #ff4f9a;
+    line-height: 1;
+    display: block;
+    filter: drop-shadow(0 2px 8px rgba(255, 79, 154, 0.3));
+}
+
+.dias-label {
+    font-size: 20px;
+    color: #5a0038;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.dias-sub {
+    font-size: 15px;
+    color: #cc2271;
+    margin: 4px 0 0;
+}
+
+/* === MOBILE === */
+@media (max-width: 480px) {
+    .intro-text {
+        font-size: 14px;
+        white-space: pre-wrap;
+        max-width: 280px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 12px 24px;
+    }
+
+    .contador {
+        font-size: 18px;
+        top: 12px;
+    }
+
+    .carta {
+        width: 290px;
+        padding: 18px 20px;
+    }
+
+    .foto-placeholder,
+    .foto-img {
+        width: 260px;
+        height: 174px;
+    }
+
+    .dias-num {
+        font-size: 60px;
+    }
+}

@@ -1,122 +1,129 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
+    <title>Tenta Me Pegar 💖</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo do Botão Fugitivo</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #739bd8, #212564);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            margin: 0;
-        }
-        .container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        button {
-            position: absolute;
-            padding: 15px 25px;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.2s ease, background 0.3s ease;
-        }
-        #fixo {
-            background: #4CAF50;
-            color: white;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        }
-        #fixo:hover {
-            background: #45a049;
-            transform: scale(1.1);
-        }
-        #fujao {
-            background: #ff4b5c;
-            color: white;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        }
-        .winner-screen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-size: 24px;
-            text-align: center;
-        }
-        .winner-screen button {
-            margin-top: 20px;
-            background: #4CAF50;
-            color: white;
-            padding: 15px 25px;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        .winner-screen h3 {
-            margin-top:180px; /* Ajusta a margem superior */
-        }
-
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <!-- Preview ao compartilhar o link (WhatsApp, iMessage, etc.) -->
+    <!-- ALTERE: substitua pela URL do Netlify quando hospedar -->
+    <meta property="og:title"       content="Tenta Me Pegar 💖">
+    <meta property="og:description" content="Um joguinho especial feito com carinho 💕">
+    <meta property="og:image"       content="https://escape-heart.netlify.app/preview.svg">
+    <meta property="og:url"         content="https://escape-heart.netlify.app">
+    <meta property="og:type"        content="website">
 </head>
+
 <body>
-    <div class="container">
-        <button id="fixo">Clique Aqui!</button>
-        <button id="fujao">Tente me pegar!</button>
+
+    <!-- Corações no fundo -->
+    <div class="hearts"></div>
+
+    <!-- Contador de tentativas -->
+    <div id="contador" class="contador"></div>
+
+    <!-- Tela inicial -->
+    <div class="start-screen" id="startScreen">
+        <h2>Oiii, minha Be 💖</h2>
+        <p class="intro-text" id="typingText"></p>
+        <button id="start">Começar 💕</button>
     </div>
-    
+
+    <!-- Botão fugitivo -->
+    <button id="fujao">Me pega 😏</button>
+
     <!-- Tela de vitória -->
     <div class="winner-screen" id="winnerScreen">
-        <button onclick="restartGame()">Jogar novamente</button>
-        <h3>Parabéns meu amor, você venceu S2</h3>
+        <h1 class="winner-title">Parabéns, minha Be 💖</h1>
+        <!-- ALTERE: mensagem da tela de vitória -->
+        <h2 class="winner-message">
+            Eu preparei isso com muito carinho, pensando em cada detalhe.
+        </h2>
+        <button id="surpresaBtn">Ver minha surpresa 💌</button>
     </div>
 
-    <script>
-        const fujao = document.getElementById("fujao");
-        const fixo = document.getElementById("fixo");
-        const winnerScreen = document.getElementById("winnerScreen");
+    <!-- ============================================================
+         SURPRESA — flui em 4 fases após a vitória
+         ============================================================ -->
+    <div class="surpresa-screen" id="surpresaScreen">
 
-        fujao.addEventListener("mouseover", () => {
-            const maxX = window.innerWidth - fujao.clientWidth;
-            const maxY = window.innerHeight - fujao.clientHeight;
-            
-            const newX = Math.random() * maxX;
-            const newY = Math.random() * maxY;
-            
-            fujao.style.left = `${newX}px`;
-            fujao.style.top = `${newY}px`;
-        });
+        <!-- Fase 1: Envelope -->
+        <div class="fase" id="faseEnvelope">
+            <div class="envelope-container" id="envelope">💌</div>
+            <p class="dica-envelope">toque para abrir 💕</p>
+        </div>
 
-        fixo.addEventListener("click", () => {
-            document.querySelector(".container").style.display = "none";
-            winnerScreen.style.display = "flex";
-        });
-        
-        function restartGame() {
-            winnerScreen.style.display = "none";
-            document.querySelector(".container").style.display = "flex";
-        }
-    </script>
+        <!-- Fase 2: Carta -->
+        <div class="fase escondida" id="faseCarta">
+            <div class="carta">
+                <!-- ALTERE: edite o texto da carta em script.js → cartaTextoStr -->
+                <p id="cartaTexto"></p>
+            </div>
+            <button id="verFotosBtn" class="btn-reveal">Ver as fotos 📸</button>
+        </div>
+
+        <!-- Fase 3: Fotos -->
+        <div class="fase escondida" id="faseFotos">
+            <div class="slideshow" id="slideshow">
+
+                <div class="slide">
+                    <!--
+                        FOTO 1 — quando tiver a foto, substitua o div abaixo por:
+                        <img src="foto1.jpg" class="foto-img" alt="">
+                    -->
+                    <div class="foto-placeholder">📸</div>
+                    <!-- ALTERE: legenda da foto 1 -->
+                    <p class="foto-legenda">— a legenda da sua primeira foto</p>
+                </div>
+
+                <div class="slide">
+                    <!--
+                        FOTO 2 — quando tiver a foto, substitua o div abaixo por:
+                        <img src="foto2.jpg" class="foto-img" alt="">
+                    -->
+                    <div class="foto-placeholder">📸</div>
+                    <!-- ALTERE: legenda da foto 2 -->
+                    <p class="foto-legenda">— a legenda da sua segunda foto</p>
+                </div>
+
+                <div class="slide">
+                    <!--
+                        FOTO 3 — quando tiver a foto, substitua o div abaixo por:
+                        <img src="foto3.jpg" class="foto-img" alt="">
+                    -->
+                    <div class="foto-placeholder">📸</div>
+                    <!-- ALTERE: legenda da foto 3 -->
+                    <p class="foto-legenda">— a legenda da sua terceira foto</p>
+                </div>
+
+            </div>
+            <div class="slide-nav">
+                <button class="btn-nav" id="prevFoto">&#8249;</button>
+                <div class="slide-dots" id="slideDots"></div>
+                <button class="btn-nav" id="nextFoto">&#8250;</button>
+            </div>
+            <button id="verContadorBtn" class="btn-reveal">Ver algo especial 💖</button>
+        </div>
+
+        <!-- Fase 4: Contador de dias -->
+        <div class="fase escondida" id="faseContador">
+            <div class="dias-wrap">
+                <!-- ALTERE: mude a data de início em script.js → dataInicio -->
+                <span id="diasNum" class="dias-num">0</span>
+                <p class="dias-label">dias juntos 💖</p>
+            </div>
+            <p class="dias-sub">e que venham muitos mais 🌸</p>
+            <button id="jogarDeNovoFinal">Jogar de novo 💕</button>
+        </div>
+
+    </div>
+
+    <audio id="winSound" src="win.mp3"></audio>
+    <!-- ALTERE: coloque sua música como musica.mp3 na pasta -->
+    <audio id="musicaFundo" src="musica.mp3" loop></audio>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
